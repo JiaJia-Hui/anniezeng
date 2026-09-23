@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 
 const BirdsCanvas  = dynamic(() => import("./BirdsCanvas"),  { ssr: false });
 const PollenCanvas = dynamic(() => import("./PollenCanvas"), { ssr: false });
+const RockScene    = dynamic(() => import("./RockScene"),    { ssr: false });
 
 const ROCK_CX = 0.70, ROCK_CY = 0.50, ROCK_RX = 0.20, ROCK_RY = 0.44;
 
@@ -89,6 +90,16 @@ export default function Hero() {
           transition: "opacity 1.2s ease",
         }}
       />
+
+      {/* Layer 4.5 — floating rock */}
+      <div style={{
+        position: "absolute", zIndex: 6,
+        left: "70%", top: "50%",
+        width: "min(42vw, 620px)", aspectRatio: "16 / 9",
+        transform: "translate(-50%, -50%)",
+      }}>
+        <RockScene />
+      </div>
 
       {/* Layer 5 — copy */}
       <div style={{
