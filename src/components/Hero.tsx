@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+
+const RockScene = dynamic(() => import("./RockScene"), { ssr: false });
 
 export default function Hero() {
   const refs = useRef<(HTMLElement | null)[]>([]);
@@ -18,10 +21,15 @@ export default function Hero() {
 
   return (
     <section id="about" style={{
-      minHeight: "100svh", display: "flex", alignItems: "center",
+      minHeight: "100svh",
+      display: "grid",
+      gridTemplateColumns: "minmax(300px, 0.9fr) minmax(400px, 1.1fr)",
+      alignItems: "center",
       padding: "120px clamp(40px, 5.5vw, 110px) 80px",
+      gap: 40,
     }}>
-      <div style={{ maxWidth: 600 }}>
+      {/* left — copy */}
+      <div>
         <p className="fade-up" ref={ref(0)} style={{
           fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 400,
           letterSpacing: ".18em", textTransform: "uppercase",
@@ -53,12 +61,13 @@ export default function Hero() {
           I love turning ideas into elegant, functional products.
         </p>
 
-        <div className="fade-up" ref={ref(4)} style={{ display: "flex", gap: 13, marginBottom: 28 }}>
+        <div className="fade-up" ref={ref(4)} style={{ display: "flex", gap: 13, marginBottom: 28, flexWrap: "wrap" }}>
           <a href="#projects" style={{
             fontFamily: "'Inter', sans-serif", fontSize: 13.5, fontWeight: 500, letterSpacing: ".04em",
             padding: "14px 28px", background: "var(--fg)", color: "#faf8f4",
             border: "none", borderRadius: 3, textDecoration: "none",
             transition: "transform .3s cubic-bezier(.23,1,.32,1), box-shadow .3s",
+            display: "inline-block",
           }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(0,0,0,0.17)"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
@@ -70,6 +79,7 @@ export default function Hero() {
             padding: "14px 28px", background: "transparent", color: "var(--fg)",
             border: "1.5px solid var(--border)", borderRadius: 3, textDecoration: "none",
             transition: "transform .3s cubic-bezier(.23,1,.32,1), border-color .25s",
+            display: "inline-block",
           }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(26,23,20,0.6)"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; }}
@@ -90,6 +100,33 @@ export default function Hero() {
           Available for new opportunities
         </div>
       </div>
+
+      {/* right — rock */}
+      <div className="fade-up" ref={ref(6)} style={{
+        position: "relative",
+        height: "min(70vw, 580px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <RockScene />
+        </div>
+        <p style={{
+          position: "absolute", bottom: -28, left: "50%", transform: "translateX(-50%)",
+          fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 300,
+          color: "var(--fg-soft)", letterSpacing: ".1em", textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}>
+          Hover to explore
+        </p>
+      </div>
+
+      {/* mobile: hide rock column on very small screens */}
+      <style>{`
+        @media (max-width: 640px) {
+          #about { grid-template-columns: 1fr !important; }
+          #about > div:last-child { display: none; }
+        }
+      `}</style>
     </section>
   );
 }
