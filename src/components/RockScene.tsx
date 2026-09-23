@@ -4,14 +4,10 @@ import { useEffect, useRef, useState } from "react";
 export default function RockScene() {
   const sceneRef   = useRef<HTMLDivElement>(null);
   const rotateRef  = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered]   = useState(false);
-  const [growth, setGrowth]     = useState({ moss: 1, mushroom: 1, flowerMain: 0, flowerUpper: 0, flowerLower: 0 });
-  const growTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [hovered, setHovered] = useState(false);
   const animRef    = useRef<number>(0);
   const targetRot  = useRef({ x: 0, y: 0 });
   const currentRot = useRef({ x: -2, y: 0 });
-  // wind sway
-  const windRef    = useRef(0);
 
   // mouse → 3d tilt
   useEffect(() => {
@@ -29,8 +25,7 @@ export default function RockScene() {
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseleave", onLeave);
 
-    const tick = (t: number) => {
-      windRef.current = Math.sin(t / 2200) * 1.2;
+    const tick = () => {
       const r = currentRot.current;
       const tr = targetRot.current;
       r.x += (tr.x - r.x) * 0.06;
@@ -50,33 +45,7 @@ export default function RockScene() {
     };
   }, []);
 
-  // hover → grow ecosystem
-  useEffect(() => {
-    growTimers.current.forEach(clearTimeout);
-    growTimers.current = [];
-
-    if (hovered) {
-      const seq = [
-        [0,    () => setGrowth(g => ({ ...g, flowerMain: 1 }))],
-        [250,  () => setGrowth(g => ({ ...g, flowerUpper: 1 }))],
-        [500,  () => setGrowth(g => ({ ...g, flowerLower: 1 }))],
-      ] as [number, () => void][];
-      seq.forEach(([delay, fn]) => {
-        growTimers.current.push(setTimeout(fn, delay));
-      });
-    } else {
-      const seq = [
-        [0,   () => setGrowth(g => ({ ...g, flowerLower: 0 }))],
-        [200, () => setGrowth(g => ({ ...g, flowerUpper: 0 }))],
-        [400, () => setGrowth(g => ({ ...g, flowerMain: 0 }))],
-      ] as [number, () => void][];
-      seq.forEach(([delay, fn]) => {
-        growTimers.current.push(setTimeout(fn, delay));
-      });
-    }
-  }, [hovered]);
-
-  const dur = "1.4s";
+  const dur = "0.6s";
   const ease = "cubic-bezier(.23,1,.32,1)";
 
   const layerBase: React.CSSProperties = {
@@ -87,6 +56,12 @@ export default function RockScene() {
     transformStyle: "preserve-3d",
     backfaceVisibility: "hidden",
   };
+
+  const growLayer = (opacity: number, zIndex: number): React.CSSProperties => ({
+    ...layerBase, zIndex,
+    opacity,
+    transition: `opacity ${dur} ${ease}`,
+  });
 
   return (
     <div
@@ -122,56 +97,23 @@ export default function RockScene() {
 
           {/* moss */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/anniezeng/assets/moss-grass-layer-real.png" alt="" style={{
-            ...layerBase, zIndex: 2,
-            opacity: growth.moss,
-            transform: `translate3d(0, ${(1 - growth.moss) * 8}px, 1px) scale(${0.9 + growth.moss * 0.1})`,
-            transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}`,
-          }} />
+          <img src="/anniezeng/assets/moss-grass-layer-real.png" alt="" style={growLayer(hovered ? 1 : 0, 2)} />
 
           {/* mushrooms */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/anniezeng/assets/mushroom-layer-real.png" alt="" style={{
-            ...layerBase, zIndex: 3,
-            opacity: growth.mushroom,
-            clipPath: `inset(${(1 - growth.mushroom) * 56}% 0 0)`,
-            transform: `translate3d(0, ${(1 - growth.mushroom) * 22}px, 3px) scaleX(${0.78 + growth.mushroom * 0.22}) scaleY(${0.24 + growth.mushroom * 0.76})`,
-            transformOrigin: "51% 63%",
-            transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}, clip-path ${dur} ${ease}`,
-          }} />
+          <img src="/anniezeng/assets/mushroom-layer-real.png" alt="" style={growLayer(hovered ? 1 : 0, 3)} />
 
           {/* flowers main */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/anniezeng/assets/flower-cluster-main.png" alt="" style={{
-            ...layerBase, zIndex: 4,
-            opacity: growth.flowerMain,
-            clipPath: `inset(${(1 - growth.flowerMain) * 45}% 0 0)`,
-            transform: `translate3d(0, ${(1 - growth.flowerMain) * 18}px, 2px) scaleX(${0.82 + growth.flowerMain * 0.18}) scaleY(${0.16 + growth.flowerMain * 0.84})`,
-            transformOrigin: "47.5% 59.5%",
-            transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}, clip-path ${dur} ${ease}`,
-          }} />
+          <img src="/anniezeng/assets/flower-cluster-main.png" alt="" style={growLayer(hovered ? 1 : 0, 4)} />
 
           {/* flowers upper */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/anniezeng/assets/flower-cluster-upper.png" alt="" style={{
-            ...layerBase, zIndex: 5,
-            opacity: growth.flowerUpper,
-            clipPath: `inset(${(1 - growth.flowerUpper) * 50}% 0 0)`,
-            transform: `translate3d(0, ${(1 - growth.flowerUpper) * 15}px, 3px) scaleX(${0.86 + growth.flowerUpper * 0.14}) scaleY(${0.2 + growth.flowerUpper * 0.8})`,
-            transformOrigin: "60.5% 54%",
-            transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}, clip-path ${dur} ${ease}`,
-          }} />
+          <img src="/anniezeng/assets/flower-cluster-upper.png" alt="" style={growLayer(hovered ? 1 : 0, 5)} />
 
           {/* flowers lower */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/anniezeng/assets/flower-cluster-lower.png" alt="" style={{
-            ...layerBase, zIndex: 6,
-            opacity: growth.flowerLower,
-            clipPath: `inset(${(1 - growth.flowerLower) * 65}% 0 0)`,
-            transform: `translate3d(0, ${(1 - growth.flowerLower) * 13}px, 4px) scaleX(${0.84 + growth.flowerLower * 0.16}) scaleY(${0.18 + growth.flowerLower * 0.82})`,
-            transformOrigin: "63.5% 72.5%",
-            transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}, clip-path ${dur} ${ease}`,
-          }} />
+          <img src="/anniezeng/assets/flower-cluster-lower.png" alt="" style={growLayer(hovered ? 1 : 0, 6)} />
         </div>
       </div>
 
