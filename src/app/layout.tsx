@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jiahui Zeng — Portfolio",
+  title: "JZ — Jiahui Zeng",
   description: "Personal portfolio of Jiahui Zeng, a passionate developer building thoughtful digital experiences.",
 };
 

@@ -1,41 +1,63 @@
-const skillGroups = [
-  {
-    category: "Frontend",
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML/CSS"],
-  },
-  {
-    category: "Backend",
-    skills: ["Node.js", "Python", "FastAPI", "PostgreSQL", "REST APIs"],
-  },
-  {
-    category: "Tools & Others",
-    skills: ["Git", "Docker", "Linux", "VS Code", "Figma"],
-  },
+"use client";
+import { useEffect, useRef } from "react";
+
+const groups = [
+  { category: "Frontend",       skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML / CSS"] },
+  { category: "Backend",        skills: ["Node.js", "Python", "FastAPI", "PostgreSQL", "REST APIs"] },
+  { category: "Tools & Others", skills: ["Git", "Docker", "Linux", "VS Code", "Figma"] },
 ];
 
 export default function Skills() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll<HTMLElement>(".fade-up").forEach((el, i) => {
+            setTimeout(() => el.classList.add("in"), i * 80);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="skills" className="py-24">
-      <div className="max-w-5xl mx-auto px-6">
-        <h2 className="text-3xl font-bold mb-2">Skills</h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-12">Technologies I work with</p>
-        <div className="grid md:grid-cols-3 gap-8">
-          {skillGroups.map((group) => (
-            <div key={group.category}>
-              <h3 className="font-semibold text-indigo-600 dark:text-indigo-400 mb-4 text-sm uppercase tracking-widest">
-                {group.category}
-              </h3>
-              <ul className="space-y-2">
-                {group.skills.map((skill) => (
-                  <li key={skill} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+    <section id="skills" ref={sectionRef} style={{ padding: "120px clamp(40px, 5.5vw, 110px)" }}>
+      <p className="fade-up" style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--fg-muted)", marginBottom: 10 }}>
+        Expertise
+      </p>
+      <h2 className="fade-up" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: "clamp(36px, 4vw, 54px)", color: "var(--fg)", marginBottom: 60, letterSpacing: "-.01em" }}>
+        Skills
+      </h2>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "48px 40px" }}>
+        {groups.map(g => (
+          <div key={g.category} className="fade-up">
+            <p style={{
+              fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 500,
+              letterSpacing: ".14em", textTransform: "uppercase",
+              color: "var(--fg-soft)", marginBottom: 20,
+              borderBottom: "1px solid var(--border)", paddingBottom: 12,
+            }}>
+              {g.category}
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {g.skills.map(s => (
+                <li key={s} style={{
+                  fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 300,
+                  color: "var(--fg)", display: "flex", alignItems: "center", gap: 10,
+                }}>
+                  <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--fg-soft)", flexShrink: 0 }} />
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </section>
   );

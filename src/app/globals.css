@@ -1,30 +1,56 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:       #e8e0cc;
+  --bg-card:  #f0ead8;
+  --fg:       #1a1714;
+  --fg-muted: rgba(26,23,20,0.52);
+  --fg-soft:  rgba(26,23,20,0.36);
+  --border:   rgba(26,23,20,0.13);
+  --accent:   #7ec47a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  cursor: none;
 }
 
-html {
-  scroll-behavior: smooth;
+/* custom cursor */
+#cur-dot {
+  position: fixed; width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(26,23,20,0.88); pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background .3s, transform .2s;
+  will-change: transform;
 }
+#cur-ring {
+  position: fixed; width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid rgba(26,23,20,0.24); pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width .5s cubic-bezier(.23,1,.32,1),
+              height .5s cubic-bezier(.23,1,.32,1),
+              border-color .4s;
+  will-change: transform;
+}
+body.on-hover #cur-dot  { background: rgba(120,90,40,0.9); transform: translate(-50%,-50%) scale(1.5); }
+body.on-hover #cur-ring { width: 54px; height: 54px; border-color: rgba(180,145,70,0.38); }
+@media (pointer: coarse) { #cur-dot, #cur-ring { display: none; } body { cursor: auto; } }
+
+a, button { cursor: none; }
+
+/* fade-up animation */
+.fade-up {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .85s cubic-bezier(.23,1,.32,1),
+              transform .85s cubic-bezier(.23,1,.32,1);
+}
+.fade-up.in { opacity: 1; transform: translateY(0); }
