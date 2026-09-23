@@ -5,7 +5,7 @@ export default function RockScene() {
   const sceneRef   = useRef<HTMLDivElement>(null);
   const rotateRef  = useRef<HTMLDivElement>(null);
   const [hovered, setHovered]   = useState(false);
-  const [growth, setGrowth]     = useState({ moss: 0, mushroom: 0, flowerMain: 0, flowerUpper: 0, flowerLower: 0 });
+  const [growth, setGrowth]     = useState({ moss: 1, mushroom: 1, flowerMain: 0, flowerUpper: 0, flowerLower: 0 });
   const growTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const animRef    = useRef<number>(0);
   const targetRot  = useRef({ x: 0, y: 0 });
@@ -57,21 +57,18 @@ export default function RockScene() {
 
     if (hovered) {
       const seq = [
-        [0,    () => setGrowth(g => ({ ...g, moss: 1 }))],
-        [500,  () => setGrowth(g => ({ ...g, mushroom: 1 }))],
-        [900,  () => setGrowth(g => ({ ...g, flowerMain: 1 }))],
-        [1200, () => setGrowth(g => ({ ...g, flowerUpper: 1 }))],
-        [1450, () => setGrowth(g => ({ ...g, flowerLower: 1 }))],
+        [0,    () => setGrowth(g => ({ ...g, flowerMain: 1 }))],
+        [250,  () => setGrowth(g => ({ ...g, flowerUpper: 1 }))],
+        [500,  () => setGrowth(g => ({ ...g, flowerLower: 1 }))],
       ] as [number, () => void][];
       seq.forEach(([delay, fn]) => {
         growTimers.current.push(setTimeout(fn, delay));
       });
     } else {
       const seq = [
-        [0,   () => setGrowth(g => ({ ...g, flowerLower: 0, flowerUpper: 0 }))],
-        [300, () => setGrowth(g => ({ ...g, flowerMain: 0 }))],
-        [600, () => setGrowth(g => ({ ...g, mushroom: 0 }))],
-        [900, () => setGrowth(g => ({ ...g, moss: 0 }))],
+        [0,   () => setGrowth(g => ({ ...g, flowerLower: 0 }))],
+        [200, () => setGrowth(g => ({ ...g, flowerUpper: 0 }))],
+        [400, () => setGrowth(g => ({ ...g, flowerMain: 0 }))],
       ] as [number, () => void][];
       seq.forEach(([delay, fn]) => {
         growTimers.current.push(setTimeout(fn, delay));
