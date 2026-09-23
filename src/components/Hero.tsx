@@ -67,7 +67,7 @@ export default function Hero() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={bgImgRef}
-          src="/anniezeng/assets/hero-background.webp"
+          src="/anniezeng/assets/background-clean.png"
           alt="Mountain valley landscape with floating rock"
           draggable={false}
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", transform: "scale(1.045)", display: "block" }}
