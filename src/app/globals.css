@@ -40,8 +40,8 @@ body {
               border-color .4s;
   will-change: transform;
 }
-body.on-hover #cur-dot  { background: rgba(120,90,40,0.9); transform: translate(-50%,-50%) scale(1.5); }
-body.on-hover #cur-ring { width: 54px; height: 54px; border-color: rgba(180,145,70,0.38); }
+body.on-btn #cur-dot  { background: rgba(120,90,40,0.9); transform: translate(-50%,-50%) scale(1.5); }
+body.on-btn #cur-ring { width: 54px; height: 54px; border-color: rgba(180,145,70,0.38); }
 @media (pointer: coarse) { #cur-dot, #cur-ring { display: none; } body { cursor: auto; } }
 
 a, button { cursor: none; }
